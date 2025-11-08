@@ -10,20 +10,23 @@ public class Factura {
     private LocalDate fechaGeneracion;
     private Cliente cliente;
     private FormaPago formaPago;
+    private double total; //agregado para mapear campo total de DB
+    private String observaciones;
     private List<DetalleFactura> detalleFacturas;
 
     public Factura() {
+        this.detalleFacturas = new ArrayList<>();
     }
 
-    public Factura(int numeroFactura, LocalDate fechaGeneracion, Cliente cliente, FormaPago formaPago, List<DetalleFactura> detalleFacturas) {
+    public Factura(int numeroFactura, LocalDate fechaGeneracion, Cliente cliente, FormaPago formaPago, double total, String observaciones, List<DetalleFactura> detalleFacturas) {
         this.numeroFactura = numeroFactura;
         this.fechaGeneracion = fechaGeneracion;
         this.cliente = cliente;
         this.formaPago = formaPago;
-        this.detalleFacturas = detalleFacturas;
+        this.total = total;
+        this.observaciones = observaciones;
+        this.detalleFacturas = detalleFacturas != null ? detalleFacturas : new ArrayList<>(); //comprueba si el DF es != de null para iniciar
     }
-
-
 
     public int getNumeroFactura() {
         return numeroFactura;
@@ -57,6 +60,22 @@ public class Factura {
         this.formaPago = formaPago;
     }
 
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
     public List<DetalleFactura> getDetalleFacturas() {
         return detalleFacturas;
     }
@@ -66,46 +85,56 @@ public class Factura {
     }
 
     public double calcularTotal() {
-        double total = 0.0;
+        double totalCalculado = 0.0;
+        if (this.detalleFacturas != null) {
         for (DetalleFactura detalleFactura : this.detalleFacturas) {
-            total += detalleFactura.calcularSubtotal();
-        }
-        return total;
+            totalCalculado += detalleFactura.calcularSubtotal();
+        } }
+        return totalCalculado;
     }
     // Crea y añade un nuevo item de detalle a la factura.
 
     public void agregarItem(Producto producto, int cantidad) {
+        // asegura inicialización de la list si no se hizo en el constructor y si es null, la crea
+        if (this.detalleFacturas == null) {
+        this.detalleFacturas = new ArrayList<>();
+        }
         DetalleFactura nuevoDetalle = new DetalleFactura();
         nuevoDetalle.setProducto(producto);
         nuevoDetalle.setCantidad(cantidad);
-
+        nuevoDetalle.setPrecioUnitario(producto.getPrecioUnitario());
         this.detalleFacturas.add(nuevoDetalle);
+    }
+
+    public void limpiarDetalles (){
+        this.detalleFacturas.clear();
     }
 
     @Override
     public String toString() {
         // Calculamos el total primero para poder mostrarlo
-        double totalFactura = this.calcularTotal();
+        double totalFactura = (this.total > 0) ? this.total : this.calcularTotal();
 
-        System.out.printf("""
+        return String.format("""
             
             --- FACTURA ---
-            Número: %s
+            Número: %d
             Fecha: %s
             Cliente: %s
             Forma de Pago: %s
+            Observación: %s
             Total: $%.2f
             Detalles: %s
             """,
                 this.numeroFactura,
                 this.fechaGeneracion,
-                this.cliente,         // Usa el toString() de Cliente
-                this.formaPago,         // Usa el toString() de FormaPago
+                this.cliente != null ? this.cliente.getNombreCompleto() : "N/A",
+                this.formaPago != null ? this.formaPago.getNombre() : "N/A",
+                this.observaciones != null ? this.observaciones : "Sin observaciones",
                 totalFactura,
-                this.detalleFacturas  // Usa el toString() de la Lista
+                this.detalleFacturas != null ? this.detalleFacturas.toString(): "Ninguno"  // Usa el toString() de la Lista
         );
 
-        return "";
     }
 }
 

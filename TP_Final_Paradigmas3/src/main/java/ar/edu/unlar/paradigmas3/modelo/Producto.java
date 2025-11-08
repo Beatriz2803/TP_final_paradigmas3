@@ -11,6 +11,14 @@ public class Producto {
     public Producto() {
     }
 
+    public Producto(String nombre, String descripcion, Double precioUnitario, Integer stock, Categoria categoria) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precioUnitario = precioUnitario;
+        this.stock = stock;
+        this.categoria = categoria;
+    }
+
     public Producto(String idProducto, String nombre, String descripcion, Double precioUnitario, Integer stock, Categoria categoria) {
         this.idProducto = idProducto;
         this.nombre = nombre;
@@ -69,10 +77,7 @@ public class Producto {
     }
 
     public boolean stockDisponible(int cantidad) {
-        if (cantidad <= 0) {
-            return false;
-        }
-        return this.stock >= cantidad;
+        return cantidad > 0 && this.stock >= cantidad;
     }
 
     public void disminuirStock(int cantidad) {
@@ -86,5 +91,14 @@ public class Producto {
         if (cantidad > 0) {
             this.stock += cantidad;
         }
+    }
+
+    @Override
+    public String toString() {
+        String nombreCategoria = (categoria != null) ? categoria.getNombre() : "Sin categoría";
+        return String.format(
+                "ProductoId: %d | Nombre: %s | Precio: $%.2f | Stock: %d | Categoria: %s"
+                ,this.idProducto, this.nombre, this.precioUnitario, this.stock, nombreCategoria
+        );
     }
 }

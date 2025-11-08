@@ -1,27 +1,37 @@
 package ar.edu.unlar.paradigmas3.modelo;
 
-public enum FormaPago {
-    // Lista de valores constantes
-    CONTADO("Contado"),
-    DEBITO("Tarjeta de Débito"),
-    TARJETA("Tarjeta de Crédito"),
-    TRANSFERENCIA("Transferencia Bancaria");
+public class FormaPago {
+    private int id_forma_pago;
+    private String nombre;
 
-
-    private final String descripcion;
-
-
-    FormaPago(String descripcion) {
-        this.descripcion = descripcion;
+    public FormaPago() {
     }
 
+    public FormaPago(int id_forma_pago, String nombre) {
+        this.id_forma_pago = id_forma_pago;
+        this.nombre = nombre;
+    }
 
-    public String getDescripcion() {
-        return descripcion;
+    public int getId_forma_pago() {
+        return id_forma_pago;
+    }
+
+    public void setId_forma_pago(int id_forma_pago) {
+        this.id_forma_pago = id_forma_pago;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     @Override
     public String toString() {
-        return this.descripcion;
+        return "FormaPago:" +
+                "id_forma_pago=" + id_forma_pago +
+                ", nombre=" + nombre;
     }
 }

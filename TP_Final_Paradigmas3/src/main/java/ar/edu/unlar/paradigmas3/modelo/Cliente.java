@@ -11,6 +11,18 @@ public class Cliente {
     public Cliente() {
     }
 
+    public Cliente(TipoCliente tipoCliente) {
+        this.tipoCliente = tipoCliente;
+    }
+//para insertar un cliente, sin id pq se genera automaticamente en tabla
+    public Cliente(String nombreCompleto, String dni, String domicilio, String telefono, TipoCliente tipoCliente) {
+        this.nombreCompleto = nombreCompleto;
+        this.dni = dni;
+        this.domicilio = domicilio;
+        this.telefono = telefono;
+        this.tipoCliente = tipoCliente;
+    }
+//para leer o modificar en BD
     public Cliente(Integer idCliente, String nombreCompleto, String dni, String domicilio, String telefono, TipoCliente tipoCliente) {
         this.idCliente = idCliente;
         this.nombreCompleto = nombreCompleto;
@@ -69,29 +81,27 @@ public class Cliente {
         this.tipoCliente = tipoCliente;
     }
 
-    public boolean esMinorista() {
+    public boolean esFinal() {
         // validamos que tipoCliente y su descripción no sean NULL
-        if (this.tipoCliente == null || this.tipoCliente.getDescripcion() == null) {
+        if (this.tipoCliente == null || this.tipoCliente.getNombre() == null) {
             return false;
         }
-        return this.tipoCliente.getDescripcion().equalsIgnoreCase("Minorista");
+        return this.tipoCliente.getNombre().equalsIgnoreCase("Final");
     }
 
     public boolean esMayorista() {
-        if (this.tipoCliente == null || this.tipoCliente.getDescripcion() == null) {
+        if (this.tipoCliente == null || this.tipoCliente.getNombre() == null) {
             return false;
         }
-        return this.tipoCliente.getDescripcion().equalsIgnoreCase("Mayorista");
+        return this.tipoCliente.getNombre().equalsIgnoreCase("Mayorista");
     }
 
     @Override
     public String toString() {
-        return
-                "\t \n- idCliente=" + idCliente +
-                "\t \n- nombreCompleto=" + nombreCompleto  +
-                "\t \n- dni=" + dni +
-                "\t \n- domicilio= " + domicilio  +
-                "\t \n- telefono=" + telefono  +
-                "\t \n- tipoCliente=" + tipoCliente;
+        return String.format(
+               "Clienteid: %d | Nombre: %s | DNI: %s | Tipo: %s ",
+                this.idCliente,this.nombreCompleto,this.dni,
+                this.tipoCliente != null ? this.tipoCliente.getNombre() : "N/A"
+        );
     }
 }

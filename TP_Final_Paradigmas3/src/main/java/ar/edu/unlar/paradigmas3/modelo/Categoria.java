@@ -6,6 +6,14 @@ public class Categoria {
 
     public Categoria() {
     }
+//para busqueda por id y por nombre de categoria
+    public Categoria(Integer idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public Categoria(String nombre) {
+        this.nombre = nombre;
+    }
 
     public Categoria(String nombre, Integer idCategoria) {
         this.nombre = nombre;
@@ -26,5 +34,11 @@ public class Categoria {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    @Override
+    public String toString() {
+        return "idCategoria: " + idCategoria +
+                ", nombre: " + nombre;
     }
 }
