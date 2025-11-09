@@ -15,9 +15,9 @@ public class Categoria {
         this.nombre = nombre;
     }
 
-    public Categoria(String nombre, Integer idCategoria) {
-        this.nombre = nombre;
+    public Categoria(Integer idCategoria, String nombre) {
         this.idCategoria = idCategoria;
+        this.nombre = nombre;
     }
 
     public Integer getIdCategoria() {

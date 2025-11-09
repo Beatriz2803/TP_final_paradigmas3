@@ -1,7 +1,7 @@
 package ar.edu.unlar.paradigmas3.modelo;
 
 public class Producto {
-    private String idProducto;
+    private Integer idProducto;
     private String nombre;
     private String descripcion;
     private Double precioUnitario;
@@ -19,7 +19,7 @@ public class Producto {
         this.categoria = categoria;
     }
 
-    public Producto(String idProducto, String nombre, String descripcion, Double precioUnitario, Integer stock, Categoria categoria) {
+    public Producto(Integer idProducto, String nombre, String descripcion, Double precioUnitario, Integer stock, Categoria categoria) {
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -28,11 +28,11 @@ public class Producto {
         this.categoria = categoria;
     }
 
-    public String getIdProducto() {
+    public Integer getIdProducto() {
         return idProducto;
     }
 
-    public void setIdProducto(String idProducto) {
+    public void setIdProducto(Integer idProducto) {
         this.idProducto = idProducto;
     }
 
