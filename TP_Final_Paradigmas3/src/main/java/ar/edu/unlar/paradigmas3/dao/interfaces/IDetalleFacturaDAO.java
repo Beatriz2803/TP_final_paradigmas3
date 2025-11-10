@@ -8,5 +8,6 @@ import java.util.List;
 public interface IDetalleFacturaDAO {
     List<DetalleFactura> buscarPorNumeroFactura(int numeroFactura);
     void insertarDetalles(Connection conn,List<DetalleFactura> detalles, int numeroFactura)throws Exception;
-    DetalleFactura buscarPorId(int id);
+
+
 }
