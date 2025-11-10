@@ -50,7 +50,7 @@ public class CategoriaDAO implements ICategoriaDAO {
             ps = conexion.prepareStatement(sql);
             ps.setInt(1,id);
             rs = ps.executeQuery();
-            while(rs.next()){
+            if (rs.next()){
                 categoria = new Categoria();
                 categoria.setIdCategoria(rs.getInt("id_categoria"));
                 categoria.setNombre(rs.getString("nombre"));
@@ -62,7 +62,7 @@ public class CategoriaDAO implements ICategoriaDAO {
             Conexion.close(ps);
             Conexion.close(conexion);
         }
-        return null;
+        return categoria;
     }
 
     @Override

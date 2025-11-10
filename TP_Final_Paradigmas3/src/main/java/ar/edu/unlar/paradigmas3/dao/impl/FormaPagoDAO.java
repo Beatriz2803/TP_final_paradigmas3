@@ -58,7 +58,7 @@ public class FormaPagoDAO implements IFormaPagoDAO {
             if(rs.next()){
                 forma=new FormaPago();
                 forma.setId_forma_pago(rs.getInt("Id_forma_pago"));
-                forma.setNombre(rs.getNString("Nombre"));
+                forma.setNombre(rs.getString("Nombre"));
             }
         } catch (Exception e) {
             System.err.println("Error al buscar forma de pago por id: "+e.getMessage());
