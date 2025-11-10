@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IFacturaDAO {
     //Metodo principal
-    boolean Generar(Factura factura);
+    boolean generar(Factura factura);
     Factura buscarPorNumero(int numeroFactura);
     List<Factura> listar();
 }
