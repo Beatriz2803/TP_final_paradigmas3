@@ -230,7 +230,7 @@ public class FormFacturaGenerar extends javax.swing.JPanel {
             }
         });
 
-        btn_GenerarFactura.setBackground(new java.awt.Color(51, 102, 255));
+        btn_GenerarFactura.setBackground(new java.awt.Color(51, 153, 0));
         btn_GenerarFactura.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
         btn_GenerarFactura.setForeground(new java.awt.Color(255, 255, 255));
         btn_GenerarFactura.setText("Generar Factura");
@@ -260,7 +260,7 @@ public class FormFacturaGenerar extends javax.swing.JPanel {
             }
         });
 
-        bntAgregarItem.setBackground(new java.awt.Color(51, 102, 255));
+        bntAgregarItem.setBackground(new java.awt.Color(51, 102, 0));
         bntAgregarItem.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
         bntAgregarItem.setForeground(new java.awt.Color(255, 255, 255));
         bntAgregarItem.setText("Agregar al carrito");

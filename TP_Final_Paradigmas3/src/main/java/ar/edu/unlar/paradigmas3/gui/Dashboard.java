@@ -54,7 +54,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         backgraund.setBackground(new java.awt.Color(255, 255, 255));
 
-        menu.setBackground(new java.awt.Color(51, 51, 255));
+        menu.setBackground(new java.awt.Color(75, 166, 121));
         menu.setForeground(new java.awt.Color(255, 255, 255));
         menu.setPreferredSize(new java.awt.Dimension(270, 431));
 
@@ -66,7 +66,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
 
-        btn_Principal.setBackground(new java.awt.Color(51, 102, 255));
+        btn_Principal.setBackground(new java.awt.Color(0, 102, 51));
         btn_Principal.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
         btn_Principal.setForeground(new java.awt.Color(255, 255, 255));
         btn_Principal.setText("Principal");
@@ -79,7 +79,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
-        btn_Clientes.setBackground(new java.awt.Color(51, 102, 255));
+        btn_Clientes.setBackground(new java.awt.Color(0, 102, 51));
         btn_Clientes.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
         btn_Clientes.setForeground(new java.awt.Color(255, 255, 255));
         btn_Clientes.setText("Clientes");
@@ -91,7 +91,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
-        btn_VerFacturas.setBackground(new java.awt.Color(51, 102, 255));
+        btn_VerFacturas.setBackground(new java.awt.Color(0, 102, 51));
         btn_VerFacturas.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
         btn_VerFacturas.setForeground(new java.awt.Color(255, 255, 255));
         btn_VerFacturas.setText("Ver facturas");
@@ -103,7 +103,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
-        btn_Productos.setBackground(new java.awt.Color(51, 102, 255));
+        btn_Productos.setBackground(new java.awt.Color(0, 102, 51));
         btn_Productos.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
         btn_Productos.setForeground(new java.awt.Color(255, 255, 255));
         btn_Productos.setText("Productos");
@@ -115,7 +115,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
-        btn_Categorias.setBackground(new java.awt.Color(51, 102, 255));
+        btn_Categorias.setBackground(new java.awt.Color(0, 102, 51));
         btn_Categorias.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
         btn_Categorias.setForeground(new java.awt.Color(255, 255, 255));
         btn_Categorias.setText("Categorias");
@@ -127,7 +127,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
-        btn_GenerarFactura.setBackground(new java.awt.Color(51, 102, 255));
+        btn_GenerarFactura.setBackground(new java.awt.Color(0, 102, 51));
         btn_GenerarFactura.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
         btn_GenerarFactura.setForeground(new java.awt.Color(255, 255, 255));
         btn_GenerarFactura.setText("Generar factura");
@@ -178,7 +178,7 @@ public class Dashboard extends javax.swing.JFrame {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
-        header.setBackground(new java.awt.Color(102, 102, 255));
+        header.setBackground(new java.awt.Color(0, 102, 51));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));

@@ -38,7 +38,6 @@ public class Categoria {
 
     @Override
     public String toString() {
-        return "idCategoria: " + idCategoria +
-                ", nombre: " + nombre;
+        return String.format("Categoria: %s", this.nombre);
     }
 }

@@ -375,19 +375,19 @@ public class FormProducto extends javax.swing.JPanel {
             }
         });
 
-        jButtonModificar.setBackground(new java.awt.Color(51, 102, 255));
+        jButtonModificar.setBackground(new java.awt.Color(51, 102, 0));
         jButtonModificar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonModificar.setText("Modificar");
         jButtonModificar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         jButtonModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        jButtonEliminar.setBackground(new java.awt.Color(51, 102, 255));
+        jButtonEliminar.setBackground(new java.awt.Color(51, 102, 0));
         jButtonEliminar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonEliminar.setText("Eliminar");
         jButtonEliminar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         jButtonEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        jButtonAgregar.setBackground(new java.awt.Color(51, 102, 255));
+        jButtonAgregar.setBackground(new java.awt.Color(51, 102, 0));
         jButtonAgregar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonAgregar.setText("Agregar");
         jButtonAgregar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
