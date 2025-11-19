@@ -30,8 +30,6 @@ public class FormaPago {
 
     @Override
     public String toString() {
-        return "FormaPago:" +
-                "id_forma_pago=" + id_forma_pago +
-                ", nombre=" + nombre;
+        return String.format("Forma de pago: %s", this.nombre);
     }
 }

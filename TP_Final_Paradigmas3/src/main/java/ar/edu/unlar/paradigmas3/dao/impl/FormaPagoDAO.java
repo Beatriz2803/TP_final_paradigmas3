@@ -29,7 +29,7 @@ public class FormaPagoDAO implements IFormaPagoDAO {
             while (rs.next()){
                 FormaPago forma = new FormaPago();
                 forma.setId_forma_pago(rs.getInt("Id_forma_pago"));
-                forma.setNombre(rs.getNString("Nombre"));
+                forma.setNombre(rs.getString("Nombre"));
                 formas.add(forma);
             }
         } catch (Exception e) {

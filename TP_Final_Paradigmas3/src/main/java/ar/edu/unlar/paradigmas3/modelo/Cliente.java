@@ -99,9 +99,7 @@ public class Cliente {
     @Override
     public String toString() {
         return String.format(
-               "Clienteid: %d | Nombre: %s | DNI: %s | Tipo: %s ",
-                this.idCliente,this.nombreCompleto,this.dni,
-                this.tipoCliente != null ? this.tipoCliente.getNombre() : "N/A"
+               "Cliente: %s", this.nombreCompleto
         );
     }
 }

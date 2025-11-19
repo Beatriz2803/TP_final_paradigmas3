@@ -97,8 +97,7 @@ public class Producto {
     public String toString() {
         String nombreCategoria = (categoria != null) ? categoria.getNombre() : "Sin categoría";
         return String.format(
-                "ProductoId: %d | Nombre: %s | Precio: $%.2f | Stock: %d | Categoria: %s"
-                ,this.idProducto, this.nombre, this.precioUnitario, this.stock, nombreCategoria
+                "Producto: %s", this.nombre
         );
     }
 }

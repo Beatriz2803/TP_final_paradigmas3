@@ -68,21 +68,23 @@ public class DetalleFacturaDAO implements IDetalleFacturaDAO {
     public void insertarDetalles(Connection conn, List<DetalleFactura> detalles, int numeroFactura) throws Exception {
         PreparedStatement ps = null;
 
-        var sql = "INSERT INTO detalle_factura (cantidad, precio_unitario, id_producto, numero_factura) " +
-                "VALUES (?, ?, ?, ?)";
+        var sql = "INSERT INTO detalle_factura (cantidad, precio_unitario, subtotal, id_producto, numero_factura) " +
+                "VALUES (?, ?, ?, ?, ?)";
 
         try {
             ps = conn.prepareStatement(sql);
 
             for (DetalleFactura detalle : detalles) {
-                // El subtotal no se inserta, lo calcula el trigger de la DB al modificar el total.
-                ps.setInt(1, detalle.getCantidad());
-                // El precio unitario debe ser el que tiene el detalle, NO el del ProductoDAO, por ser histórico.
-                ps.setDouble(2, detalle.getPrecioUnitario());
-                ps.setInt(3, detalle.getProducto().getIdProducto());
-                ps.setInt(4, numeroFactura);
+                double subtotalcalculado = detalle.calcularSubtotal();
 
-                // Usamos addBatch y executeBatch para inserción más eficiente
+                ps.setInt(1, detalle.getCantidad());
+                ps.setDouble(2, detalle.getPrecioUnitario());
+                ps.setDouble(3, subtotalcalculado);
+                ps.setInt(4, detalle.getProducto().getIdProducto());
+                ps.setInt(5, numeroFactura);
+
+
+                // Usamos addBatch y executeBatch
                 ps.addBatch();
             }
 
