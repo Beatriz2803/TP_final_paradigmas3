@@ -244,10 +244,16 @@ public class FormCategoria extends javax.swing.JPanel {
             }
         });
 
+        jButtonAgregar.setBackground(new java.awt.Color(51, 102, 255));
+        jButtonAgregar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonAgregar.setText("Agregar");
+        jButtonAgregar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         jButtonAgregar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
+        jButtonModificar.setBackground(new java.awt.Color(51, 102, 255));
+        jButtonModificar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonModificar.setText("Modificar");
+        jButtonModificar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         jButtonModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButtonModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -255,7 +261,10 @@ public class FormCategoria extends javax.swing.JPanel {
             }
         });
 
+        jButtonEliminar.setBackground(new java.awt.Color(51, 102, 255));
+        jButtonEliminar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonEliminar.setText("Eliminar");
+        jButtonEliminar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         jButtonEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);

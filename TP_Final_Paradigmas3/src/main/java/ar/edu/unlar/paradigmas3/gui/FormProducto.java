@@ -1,27 +1,210 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package ar.edu.unlar.paradigmas3.gui;
 
-/**
- *
- * @author hp
- */
+import ar.edu.unlar.paradigmas3.dao.impl.CategoriaDAO;
+import ar.edu.unlar.paradigmas3.dao.impl.ProductoDAO;
+import ar.edu.unlar.paradigmas3.modelo.Categoria;
+import ar.edu.unlar.paradigmas3.modelo.Producto;
+import ar.edu.unlar.paradigmas3.modeloTablas.CategoriaComboBoxModel;
+import ar.edu.unlar.paradigmas3.modeloTablas.ProductoTableModel;
+import ar.edu.unlar.paradigmas3.utilidades.Validaciones; // Asumo que cambiaste el nombre a ValidadorUtil
+
+import java.util.List;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+
 public class FormProducto extends javax.swing.JPanel {
 
-    /**
-     * Creates new form FormCategoria
-     */
+        // 1. Dependencias y Estado
+    private final ProductoDAO productoDAO = new ProductoDAO();
+    private final CategoriaDAO categoriaDAO = new CategoriaDAO();
+    private Producto productoSeleccionado = null;
+    
+    // Lista de categorías para el ComboBox
+    private List<Categoria> listaCategorias; 
+    
+    // Mapeo de Componentes del Diseñador (Declaración de variables final)
+    private final JTextField txtNombre;
+    private final JTextField txtDescripcion;
+    private final JTextField txtPrecio;
+    private final JTextField txtStock;
+    private final JComboBox<Categoria> cmbCategoria; // Usaremos la variable cmbCategoria para el JComboBox
+    private final JTextField txtBuscarId;
+    private final javax.swing.JTable tblProductos;
+    private final javax.swing.JButton btnAgregar;
+    private final javax.swing.JButton btnModificar;
+    private final javax.swing.JButton btnEliminar;
+
     public FormProducto() {
         initComponents();
+    // --- ASIGNACIÓN DE VARIABLES INTERNAS ---
+        this.txtNombre = jtfNombre;
+        this.txtDescripcion = jtfDescripcion;
+        this.txtPrecio = jtfPrecio;
+        this.txtStock = jtfStock;
+        this.txtBuscarId = jtfBuscarId;
+        this.tblProductos = jTable1;
+        this.btnAgregar = jButtonAgregar;
+        this.btnModificar = jButtonModificar;
+        this.btnEliminar = jButtonEliminar;
+        
+        // Solución al error de tipos: Forzar el cast del JComboBox
+        this.cmbCategoria = (JComboBox<Categoria>) (JComboBox<?>) jcbCategoria; 
+        
+        cargarCategorias();
+        cargarTabla();
+        
+        // Listener para la selección de filas
+        tblProductos.getSelectionModel().addListSelectionListener(this::tblProductosSelectionChanged);
+        
+        // Enlaces manuales (para evitar advertencias de unused)
+        btnAgregar.addActionListener(this::jButtonAgregarActionPerformed);
+        btnModificar.addActionListener(this::jButtonModificarActionPerformed);
+        btnEliminar.addActionListener(this::jButtonEliminarActionPerformed);
+        txtBuscarId.addActionListener(this::jtfBuscarIdActionPerformed); 
+    }
+    
+    // --- Lógica de ComboBox de Categorías ---
+    private void cargarCategorias() {
+        try {
+            listaCategorias = categoriaDAO.listar();
+            CategoriaComboBoxModel modelo = new CategoriaComboBoxModel(listaCategorias);
+            cmbCategoria.setModel(modelo);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar categorías: " + e.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    // --- Lógica de JTable ---
+    private void cargarTabla() {
+        List<Producto> listaProductos = productoDAO.listar();
+        tblProductos.setModel(new ProductoTableModel(listaProductos));
+        limpiarCampos();
+    }
+    
+    private void tblProductosSelectionChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting() && tblProductos.getSelectedRow() != -1) {
+            int fila = tblProductos.getSelectedRow();
+            ProductoTableModel modelo = (ProductoTableModel) tblProductos.getModel();
+            
+            productoSeleccionado = modelo.getProducto(fila);
+            
+            // Cargar datos en los campos
+            txtNombre.setText(productoSeleccionado.getNombre());
+            txtDescripcion.setText(productoSeleccionado.getDescripcion());
+            txtPrecio.setText(String.valueOf(productoSeleccionado.getPrecioUnitario()));
+            txtStock.setText(String.valueOf(productoSeleccionado.getStock()));
+            
+            // Seleccionar la Categoría en el ComboBox
+            if (productoSeleccionado.getCategoria() != null) {
+                 cmbCategoria.setSelectedItem(productoSeleccionado.getCategoria());
+            }
+
+            btnAgregar.setEnabled(false);
+            btnModificar.setEnabled(true);
+            btnEliminar.setEnabled(true);
+        }
+    }
+    
+    private void limpiarCampos() {
+        txtNombre.setText("");
+        txtDescripcion.setText("");
+        txtPrecio.setText("");
+        txtStock.setText("");
+        txtBuscarId.setText("");
+        if (cmbCategoria.getItemCount() > 0) {
+             cmbCategoria.setSelectedIndex(0); 
+        }
+        productoSeleccionado = null; 
+        
+        btnAgregar.setEnabled(true);
+        btnModificar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        tblProductos.clearSelection();
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+
+    // --- 3. Validación de campos ---
+    private boolean validarCamposProducto() {
+        // VALIDACIÓN DE TEXTO (min 3 caracteres)
+        if (!Validaciones.validarTextoMinimo(txtNombre, "Nombre")) return false;
+        if (!Validaciones.validarTextoMinimo(txtDescripcion, "Descripción")) return false;
+        
+        // VALIDACIÓN NUMÉRICA (número > 0)
+        if (!Validaciones.validarNumeroMayorCero(txtPrecio, "Precio")) return false;
+        if (!Validaciones.validarNumeroMayorCero(txtStock, "Stock")) return false; 
+        
+        if (cmbCategoria.getSelectedItem() == null) {
+             JOptionPane.showMessageDialog(this, "Debe seleccionar una Categoría.", "Validación", JOptionPane.ERROR_MESSAGE);
+             return false;
+        }
+        return true;
+    }
+
+    // --- Eventos de Botones (Lógica CRUD) ---
+    
+    private void jButtonAgregarActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        if (!validarCamposProducto()) return;
+        
+        Categoria categoriaSeleccionada = (Categoria) cmbCategoria.getSelectedItem();
+        
+        Producto nuevoProducto = new Producto(
+            txtNombre.getText().trim(),
+            txtDescripcion.getText().trim(),
+            Double.parseDouble(txtPrecio.getText().trim()), // Conversión segura después de validación
+            Integer.parseInt(txtStock.getText().trim()),    // Conversión segura después de validación
+            categoriaSeleccionada
+        );
+        
+        if (productoDAO.agregar(nuevoProducto)) {
+            JOptionPane.showMessageDialog(this, "Producto agregado con éxito.");
+            cargarTabla();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error: No se pudo agregar el producto.", "Error de Persistencia", JOptionPane.ERROR_MESSAGE);
+        }
+    }                                            
+
+    private void jButtonModificarActionPerformed(java.awt.event.ActionEvent evt) {                                               
+        if (productoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un producto para modificar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!validarCamposProducto()) return;
+        
+        // Aplicar cambios al objeto seleccionado
+        productoSeleccionado.setNombre(txtNombre.getText().trim());
+        productoSeleccionado.setDescripcion(txtDescripcion.getText().trim());
+        productoSeleccionado.setPrecioUnitario(Double.parseDouble(txtPrecio.getText().trim()));
+        productoSeleccionado.setStock(Integer.parseInt(txtStock.getText().trim()));
+        productoSeleccionado.setCategoria((Categoria) cmbCategoria.getSelectedItem());
+        
+        if (productoDAO.modificar(productoSeleccionado)) {
+            JOptionPane.showMessageDialog(this, "Producto modificado con éxito.");
+            cargarTabla();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error: No se pudo modificar el producto.", "Error de Persistencia", JOptionPane.ERROR_MESSAGE);
+        }
+    }                                              
+
+    private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {                                              
+        if (productoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un producto para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int confirmacion = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar a " + productoSeleccionado.getNombre() + "?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+        
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            if (productoDAO.eliminar(productoSeleccionado.getIdProducto())) {
+                JOptionPane.showMessageDialog(this, "Producto eliminado con éxito.");
+                cargarTabla();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se puede eliminar. El producto está en facturas.", "Error de Integridad", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -29,25 +212,27 @@ public class FormProducto extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jtfNombre = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        jtfPrecio = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        jtfStock = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
+        jtfDescripcion = new javax.swing.JTextField();
+        jcbCategoria = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jtfBuscarId = new javax.swing.JTextField();
         jButtonModificar = new javax.swing.JButton();
         jButtonEliminar = new javax.swing.JButton();
         jButtonAgregar = new javax.swing.JButton();
+
+        setPreferredSize(new java.awt.Dimension(985, 460));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -56,21 +241,46 @@ public class FormProducto extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Ingrese nombre");
 
+        jtfNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtfNombreActionPerformed(evt);
+            }
+        });
+
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("Ingrese precio");
 
+        jtfPrecio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtfPrecioActionPerformed(evt);
+            }
+        });
+
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Ingrese stock");
+
+        jtfStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtfStockActionPerformed(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Ingrese categoria");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setText("Ingrese detalle");
+        jLabel7.setText("Ingrese descripcion");
 
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        jtfDescripcion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                jtfDescripcionActionPerformed(evt);
+            }
+        });
+
+        jcbCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcbCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbCategoriaActionPerformed(evt);
             }
         });
 
@@ -83,14 +293,14 @@ public class FormProducto extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .addComponent(jtfPrecio, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField4)
+                    .addComponent(jtfStock)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField5)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField6)
-                    .addComponent(jTextField1))
+                    .addComponent(jtfDescripcion)
+                    .addComponent(jtfNombre)
+                    .addComponent(jcbCategoria, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -99,24 +309,24 @@ public class FormProducto extends javax.swing.JPanel {
                 .addGap(44, 44, 44)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jtfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jtfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jtfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jtfStock, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addComponent(jcbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(160, 160, 160))
         );
 
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
@@ -158,20 +368,29 @@ public class FormProducto extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Buscar:");
 
-        jTextField2.setText("Ingrese ID");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        jtfBuscarId.setText("Ingrese ID");
+        jtfBuscarId.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                jtfBuscarIdActionPerformed(evt);
             }
         });
 
+        jButtonModificar.setBackground(new java.awt.Color(51, 102, 255));
+        jButtonModificar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonModificar.setText("Modificar");
+        jButtonModificar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         jButtonModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
+        jButtonEliminar.setBackground(new java.awt.Color(51, 102, 255));
+        jButtonEliminar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonEliminar.setText("Eliminar");
+        jButtonEliminar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         jButtonEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
+        jButtonAgregar.setBackground(new java.awt.Color(51, 102, 255));
+        jButtonAgregar.setForeground(new java.awt.Color(255, 255, 255));
         jButtonAgregar.setText("Agregar");
+        jButtonAgregar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         jButtonAgregar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -190,7 +409,7 @@ public class FormProducto extends javax.swing.JPanel {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jtfBuscarId, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(228, 228, 228))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                                 .addComponent(jButtonAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -207,7 +426,7 @@ public class FormProducto extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtfBuscarId, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -233,8 +452,10 @@ public class FormProducto extends javax.swing.JPanel {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 533, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -251,13 +472,58 @@ public class FormProducto extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    private void jtfBuscarIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfBuscarIdActionPerformed
+        if (!Validaciones.validarNumeroMayorCero(txtBuscarId, "ID de Búsqueda")) return;
+        
+        try {
+            int idBuscado = Integer.parseInt(txtBuscarId.getText().trim());
+            Producto producto = productoDAO.buscarPorId(idBuscado);
+            
+            if (producto != null) {
+                tblProductos.setModel(new ProductoTableModel(List.of(producto)));
+                
+                // Cargar campos para edición
+                txtNombre.setText(producto.getNombre());
+                txtDescripcion.setText(producto.getDescripcion());
+                txtPrecio.setText(String.valueOf(producto.getPrecioUnitario()));
+                txtStock.setText(String.valueOf(producto.getStock()));
+                if (producto.getCategoria() != null) cmbCategoria.setSelectedItem(producto.getCategoria());
+                
+                productoSeleccionado = producto;
+                
+                // Habilitar Modificar/Eliminar
+                btnAgregar.setEnabled(false);
+                btnModificar.setEnabled(true);
+                btnEliminar.setEnabled(true);
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró el producto con ID: " + idBuscado, "Búsqueda Fallida", JOptionPane.WARNING_MESSAGE);
+                cargarTabla();
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El ID debe ser un número entero.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jtfBuscarIdActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+    private void jtfDescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfDescripcionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    }//GEN-LAST:event_jtfDescripcionActionPerformed
+
+    private void jtfNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtfNombreActionPerformed
+
+    private void jtfPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfPrecioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtfPrecioActionPerformed
+
+    private void jtfStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfStockActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtfStockActionPerformed
+
+    private void jcbCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbCategoriaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jcbCategoriaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -277,11 +543,11 @@ public class FormProducto extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    private javax.swing.JComboBox<String> jcbCategoria;
+    private javax.swing.JTextField jtfBuscarId;
+    private javax.swing.JTextField jtfDescripcion;
+    private javax.swing.JTextField jtfNombre;
+    private javax.swing.JTextField jtfPrecio;
+    private javax.swing.JTextField jtfStock;
     // End of variables declaration//GEN-END:variables
 }
