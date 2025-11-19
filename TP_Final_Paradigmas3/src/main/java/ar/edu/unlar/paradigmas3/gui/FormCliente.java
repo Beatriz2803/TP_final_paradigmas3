@@ -4,8 +4,8 @@ import ar.edu.unlar.paradigmas3.dao.impl.ClienteDAO;
 import ar.edu.unlar.paradigmas3.dao.impl.TipoClienteDAO;
 import ar.edu.unlar.paradigmas3.modelo.Cliente;
 import ar.edu.unlar.paradigmas3.modelo.TipoCliente;
-import ar.edu.unlar.paradigmas3.modelotablas.ClienteTableModel;
-import ar.edu.unlar.paradigmas3.modelotablas.TipoClienteComboBoxModel;
+import ar.edu.unlar.paradigmas3.models.ClienteTableModel;
+import ar.edu.unlar.paradigmas3.models.TipoClienteComboBoxModel;
 import ar.edu.unlar.paradigmas3.utilidades.Validaciones;
 
 import java.awt.Container;
@@ -310,7 +310,6 @@ private void reemplazarTextFieldPorComboBox(JTextField oldField, JComboBox<TipoC
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setForeground(new java.awt.Color(255, 255, 255));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},

@@ -1,4 +1,4 @@
-package ar.edu.unlar.paradigmas3.modelotablas; // O donde guardes tus modelos
+package ar.edu.unlar.paradigmas3.models; // O donde guardes tus modelos
 
 import ar.edu.unlar.paradigmas3.modelo.TipoCliente;
 import java.util.List;

@@ -274,5 +274,6 @@ public class FormFacturas extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
-    // End of variables declaration//GEN-END:variables
+    // End of
+    // variables declaration//GEN-END:variables
 }

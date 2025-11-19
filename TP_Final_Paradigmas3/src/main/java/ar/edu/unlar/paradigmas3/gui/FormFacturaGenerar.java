@@ -119,7 +119,7 @@ public class FormFacturaGenerar extends javax.swing.JPanel {
 
         // crear el Detalle y añadir al carrito
         DetalleFactura nuevoDetalle = new DetalleFactura(productoSeleccionado, cantidad);
-        .
+    
         
         detallesVenta.add(nuevoDetalle);
         

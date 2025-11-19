@@ -1,4 +1,4 @@
-package ar.edu.unlar.paradigmas3.modelotablas;
+package ar.edu.unlar.paradigmas3.models;
 
 import ar.edu.unlar.paradigmas3.modelo.Cliente;
 import java.util.List;
