@@ -1,4 +1,4 @@
-package ar.edu.unlar.paradigmas3.modeloTablas;
+package ar.edu.unlar.paradigmas3.models;
 
 import ar.edu.unlar.paradigmas3.modelo.Factura;
 import javax.swing.table.AbstractTableModel;

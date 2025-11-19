@@ -1,36 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package ar.edu.unlar.paradigmas3.gui;
 
 import ar.edu.unlar.paradigmas3.dao.impl.CategoriaDAO;
 import ar.edu.unlar.paradigmas3.modelo.Categoria;
-import ar.edu.unlar.paradigmas3.modeloTablas.CategoriaTableModel;
+import ar.edu.unlar.paradigmas3.models.CategoriaTableModel;
 import ar.edu.unlar.paradigmas3.utilidades.Validaciones;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 
-/**
- *
- * @author hp
- */
 public class FormCategoria extends javax.swing.JPanel {
 
-        // 1. Dependencias y Estado
+        // Dependencias y Estado
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
     private Categoria categoriaSeleccionada = null;
-    
-    // Nombres más descriptivos (actualizados manualmente o en el IDE)
-    private final javax.swing.JTextField txtNombreCategoria; // Antes jTextField1
-    private final javax.swing.JTable tblCategorias;          // Antes jTable1
-    private final javax.swing.JTextField txtBuscarId;        // Antes jTextField2
+
+    private final javax.swing.JTextField txtNombreCategoria;
+    private final javax.swing.JTable tblCategorias;
+    private final javax.swing.JTextField txtBuscarId;
     
     // Asignamos los nombres que usaste en el diseñador a las variables de la clase
-    private final javax.swing.JButton btnAgregar;        // Antes jButtonAgregar
-    private final javax.swing.JButton btnModificar;      // Antes jButtonModificar
-    private final javax.swing.JButton btnEliminar;       // Antes jButtonEliminar
+    private final javax.swing.JButton btnAgregar;
+    private final javax.swing.JButton btnModificar;
+    private final javax.swing.JButton btnEliminar;
     
     public FormCategoria() {
         initComponents();
@@ -43,38 +35,27 @@ public class FormCategoria extends javax.swing.JPanel {
         this.btnModificar = jButtonModificar;
         this.btnEliminar = jButtonEliminar; 
         
-        cargarTabla(); // Cargar datos al iniciar
+        cargarTabla();
         
         // Agregar listener para manejar la selección de filas
         tblCategorias.getSelectionModel().addListSelectionListener(this::tblCategoriasSelectionChanged);
         
-        // --- 3. ENLACE MANUAL DE BOTONES FALTANTES ---
-        // El IDE no enlazó todos los botones. Los enlazamos manualmente aquí.
-        // Esto soluciona la advertencia "is never used".
+        //ENLACE MANUAL DE BOTONES FALTANTES
         btnAgregar.addActionListener(this::jButtonAgregarActionPerformed);
         btnEliminar.addActionListener(this::jButtonEliminarActionPerformed);
-        // El botón Modificar ya estaba enlazado en initComponents, pero lo aseguramos:
         btnModificar.addActionListener(this::jButtonModificarActionPerformed);
         
     }
 
-    
-    // --- 2. Lógica de JTable ---
-    
+
+    // Lógica de JTable
     private void cargarTabla() {
         List<Categoria> listaCategorias = categoriaDAO.listar();
         CategoriaTableModel modelo = new CategoriaTableModel(listaCategorias);
         tblCategorias.setModel(modelo);
-        
-        // Ocultar la columna ID si se desea, ya que es la columna 0
-        // tblCategorias.getColumnModel().getColumn(0).setMaxWidth(0);
-        // tblCategorias.getColumnModel().getColumn(0).setMinWidth(0);
-        // tblCategorias.getColumnModel().getColumn(0).setPreferredWidth(0);
-
         limpiarCampos();
     }
-    
-    // Listener para cuando se selecciona una fila
+
     private void tblCategoriasSelectionChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && tblCategorias.getSelectedRow() != -1) {
             int fila = tblCategorias.getSelectedRow();
@@ -93,14 +74,12 @@ public class FormCategoria extends javax.swing.JPanel {
         }
     }
     
-        // --- 3. Métodos Auxiliares ---
-
+        // Métodos Auxiliares
     private void limpiarCampos() {
         txtNombreCategoria.setText("");
         txtBuscarId.setText("");
-        categoriaSeleccionada = null; // Volver al modo "Agregar"
-        
-        // Habilitamos el botón Agregar y deshabilitamos Modificar/Eliminar (estado inicial)
+        categoriaSeleccionada = null;
+
         btnAgregar.setEnabled(true);
         btnModificar.setEnabled(false);
         btnEliminar.setEnabled(false);
@@ -110,15 +89,15 @@ public class FormCategoria extends javax.swing.JPanel {
     }
     
 
-        // --- 4. Eventos de Botones (Lógica CRUD y Validación) ---
+
     
     private void jButtonAgregarActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        // --- VALIDACIÓN DE LA CONSIGNA (Mínimo 3 caracteres) ---
+
         if (!Validaciones.validarTextoMinimo(txtNombreCategoria, "Nombre de Categoría")) {
-            return; // Detiene la ejecución si la validación falla
+            return;
         }
         
-        // Crear el objeto
+        // crear el objeto
         Categoria nuevaCategoria = new Categoria(txtNombreCategoria.getText().trim());
         
         if (categoriaDAO.agregar(nuevaCategoria)) {
@@ -148,9 +127,7 @@ public class FormCategoria extends javax.swing.JPanel {
         }
     }
     
-    // Nota: El método jTextField2ActionPerformed (Buscar) quedó pendiente, 
-    // pero la lógica principal del CRUD y la tabla ya está lista. 
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -342,10 +319,8 @@ public class FormCategoria extends javax.swing.JPanel {
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    
-    
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-// 1. VALIDACIÓN: Asegurar que se ingresó un ID numérico válido (> 0)
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {
     if (!Validaciones.validarNumeroMayorCero(txtBuscarId, "ID de Búsqueda")) {
         return;
     }
@@ -353,46 +328,41 @@ public class FormCategoria extends javax.swing.JPanel {
     try {
         int idBuscado = Integer.parseInt(txtBuscarId.getText().trim());
         
-        // 2. LLAMADA AL DAO
+        // LLAMADA AL DAO
         Categoria categoria = categoriaDAO.buscarPorId(idBuscado);
         
         if (categoria != null) {
-            // 3. SI SE ENCUENTRA: Mostrar el resultado y cargarlo para modificación
-            
-            // Creamos un nuevo modelo con solo la categoría encontrada
             List<Categoria> resultado = List.of(categoria);
             CategoriaTableModel modelo = new CategoriaTableModel(resultado);
             tblCategorias.setModel(modelo);
-            
-            // Cargamos los datos en los campos de edición
+
             categoriaSeleccionada = categoria;
             txtNombreCategoria.setText(categoria.getNombre());
             
             JOptionPane.showMessageDialog(this, "Categoría encontrada.");
             
         } else {
-            // 4. SI NO SE ENCUENTRA: Informar y recargar la tabla completa
+
             JOptionPane.showMessageDialog(this, "No se encontró ninguna categoría con el ID: " + idBuscado, "Búsqueda Fallida", JOptionPane.WARNING_MESSAGE);
-            cargarTabla(); // Vuelve a cargar todos los elementos
+            cargarTabla();
         }
     } catch (NumberFormatException e) {
-        // Esta excepción ya está cubierta por ValidadorUtil, pero es un seguro
+
         JOptionPane.showMessageDialog(this, "El ID debe ser un número entero.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
     }
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }
 
     private void jButtonModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarActionPerformed
         if (categoriaSeleccionada == null) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un registro de la tabla para modificar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
-        // --- VALIDACIÓN DE LA CONSIGNA ---
+
         if (!Validaciones.validarTextoMinimo(txtNombreCategoria, "Nombre de Categoría")) {
             return; 
         }
 
-        // Aplicar el cambio al objeto seleccionado
+
         categoriaSeleccionada.setNombre(txtNombreCategoria.getText().trim());
         
         if (categoriaDAO.modificar(categoriaSeleccionada)) {
@@ -401,8 +371,7 @@ public class FormCategoria extends javax.swing.JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "Error: No se pudo modificar la categoría.", "Error de Persistencia", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jButtonModificarActionPerformed
-
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAgregar;

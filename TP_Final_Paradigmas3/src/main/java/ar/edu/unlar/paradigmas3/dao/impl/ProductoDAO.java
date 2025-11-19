@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ProductoDAO implements IProductoDAO {
 
-    // --- Método auxiliar para mapear ResultSet a Objeto Producto ---
+    // Metodo auxiliar para mapear ResultSet a Objeto Producto
     private Producto mapearProducto(ResultSet rs) throws SQLException {
         // Crear categoría asociada (La buscamos con el JOIN)
         Categoria categoria = new Categoria(
@@ -214,14 +214,14 @@ public class ProductoDAO implements IProductoDAO {
     }
 
 
-//    Para que el FacturaDAO.generar() funcione, debes añadir el siguiente método
-//    Este método es especial porque recibe la conexión de la transacción (conn) y solo actualiza el stock, sin cerrar la conexión.
+//    Para que el FacturaDAO.generar() funcione, debes añadir el siguiente metodo
+//    Este metodo es especial porque recibe la conexión de la transacción (conn) y solo actualiza el stock, sin cerrar la conexión.
 
     public boolean modificarStock(Connection conn, int idProducto, int nuevoStock) throws Exception {
         PreparedStatement ps = null;
         String sql = "UPDATE productos SET stock = ? WHERE id_producto = ?";
 
-        // NO usamos try-with-resources ni obtenemos una nueva conexión. Usamos la conexión que nos pasa FacturaDAO.
+        // NO usamos try-with-resources ni obtenemos una nueva conexión, usamos la conexión que nos pasa FacturaDAO.
         try {
             ps = conn.prepareStatement(sql);
             ps.setInt(1, nuevoStock);
@@ -242,11 +242,7 @@ public class ProductoDAO implements IProductoDAO {
 
 
 /**
- Lo que estás viendo con el metodo mapearProducto(ResultSet rs) y la lógica similar que usamos en ClienteDAO es una
- técnica crucial llamada Mapeo Objeto-Relacional (ORM por sus siglas en inglés) manual.
-
- El objetivo del método mapearProducto es doble:
+ Nptita: l objetivo del metodo mapearProducto es doble:
  1. Reconstruir Objetos a partir de Filas (ResultSet)
  2. Manejar Asociaciones (JOINs)
-
  */

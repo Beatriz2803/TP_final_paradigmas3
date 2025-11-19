@@ -5,12 +5,7 @@ import javax.swing.JTextField;
 
 public class Validaciones {
 
-    /**
-     * Valida que un campo de texto no esté vacío y cumpla con el mínimo de 3 caracteres.
-     * @param campo JTextField a validar.
-     * @param nombreCampo Nombre visible del campo para el mensaje de error.
-     * @return true si es válido, false si falla.
-     */
+
     public static boolean validarTextoMinimo(JTextField campo, String nombreCampo) {
         String texto = campo.getText().trim();
 
@@ -27,12 +22,7 @@ public class Validaciones {
         return true;
     }
 
-    /**
-     * Valida que un campo sea un número, no esté vacío y sea estrictamente mayor a 0.
-     * @param campo JTextField a validar.
-     * @param nombreCampo Nombre visible del campo para el mensaje de error.
-     * @return true si es válido, false si falla.
-     */
+
     public static boolean validarNumeroMayorCero(JTextField campo, String nombreCampo) {
         String texto = campo.getText().trim();
 

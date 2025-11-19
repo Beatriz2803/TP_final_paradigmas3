@@ -160,7 +160,7 @@ public class TipoClienteDAO implements ITipoClienteDAO {
             int filasAfectadas = ps.executeUpdate();
             return filasAfectadas > 0;
         } catch (Exception e) {
-            // NOTA: Si este tipo de cliente está asociado a un Cliente, la DB lanzará un error de FK.
+            // Si este tipo de cliente está asociado a un Cliente, la DB lanzará un error de FK.
             System.err.println("Error al eliminar tipo de cliente: " + e.getMessage());
             return false;
         } finally {

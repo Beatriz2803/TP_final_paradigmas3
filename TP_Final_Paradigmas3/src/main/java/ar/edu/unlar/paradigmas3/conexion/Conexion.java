@@ -28,11 +28,7 @@ public class Conexion {
         return conexion;
 
     }
-    // -------------------------------------------
-    // MÉTODOS AUXILIARES PARA CERRAR RECURSOS
-    // -------------------------------------------
-
-    // Cierra la conexión de forma segura. */
+// MÉTODOS AUXILIARES PARA CERRAR RECURSOS
     public static void close(Connection conn) {
         if (conn != null) {
             try {
@@ -43,7 +39,6 @@ public class Conexion {
         }
     }
 
-    // Cierra el PreparedStatement de forma segura. /
     public static void close(PreparedStatement pstmt) {
         if (pstmt != null) {
             try {
@@ -54,7 +49,6 @@ public class Conexion {
         }
     }
 
-//Cierra el ResultSet de forma segura./
  public static void close(ResultSet rs) {
     if (rs != null) {
         try {
@@ -64,7 +58,5 @@ public class Conexion {
              }
         }
         }
-
-
 }
 

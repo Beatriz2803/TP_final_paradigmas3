@@ -92,7 +92,7 @@ public class Factura {
         } }
         return totalCalculado;
     }
-    // Crea y añade un nuevo item de detalle a la factura.
+
 
     public void agregarItem(Producto producto, int cantidad) {
         // asegura inicialización de la list si no se hizo en el constructor y si es null, la crea
@@ -112,7 +112,7 @@ public class Factura {
 
     @Override
     public String toString() {
-        // Calculamos el total primero para poder mostrarlo
+
         double totalFactura = (this.total > 0) ? this.total : this.calcularTotal();
 
         return String.format("""

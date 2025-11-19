@@ -39,7 +39,7 @@ public class ClienteTableModel extends AbstractTableModel {
             case 3: return cliente.getDomicilio();
             case 4: return cliente.getTelefono();
             case 5: 
-                // *** PUNTO CLAVE: Mostrar el nombre de la asociación ***
+
                 return cliente.getTipoCliente() != null ? cliente.getTipoCliente().getNombre() : "N/A";
             default: return null;
         }

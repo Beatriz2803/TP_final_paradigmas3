@@ -23,9 +23,9 @@ public class DetalleFacturaDAO implements IDetalleFacturaDAO {
         detalle.setIdDetalleFactura(rs.getInt("id_detalle_factura"));
         detalle.setCantidad(rs.getInt("cantidad"));
         detalle.setPrecioUnitario(rs.getDouble("precio_unitario"));
-        detalle.setSubtotal(rs.getDouble("subtotal")); // El subtotal viene calculado de la DB
+        detalle.setSubtotal(rs.getDouble("subtotal"));
 
-        //ASOCIACIÓN: Reconstruir el Producto (no necesitamos la Factura aquí)
+        //Reconstruir el Producto
         int idProducto = rs.getInt("id_producto");
         Producto producto = productoDAO.buscarPorId(idProducto);
         detalle.setProducto(producto);

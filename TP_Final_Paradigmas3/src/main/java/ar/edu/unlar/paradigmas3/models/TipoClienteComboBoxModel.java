@@ -27,7 +27,7 @@ public class TipoClienteComboBoxModel extends AbstractListModel<TipoCliente> imp
         return tipos.get(index);
     }
 
-    // --- Implementación de ComboBoxModel ---
+    //Implementación de ComboBoxModel
     @Override
     public void setSelectedItem(Object anItem) {
         if (anItem instanceof TipoCliente) {

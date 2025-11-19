@@ -20,19 +20,17 @@ import javax.swing.GroupLayout;
 
 public class FormCliente extends javax.swing.JPanel {
 
-     // 1. Dependencias y Estado
+     // Dependencias y Estado
     private final ClienteDAO clienteDAO = new ClienteDAO();
     private final TipoClienteDAO tipoClienteDAO = new TipoClienteDAO();
     private Cliente clienteSeleccionado = null;
-    // Lista de tipos de cliente para el ComboBox
-    private List<TipoCliente> listaTipos; 
-    
-    // 2. Declaración de variables internas (Solo usamos los nombres generados para la asignación)
+    private List<TipoCliente> listaTipos;
+
     private final JTextField txtNombreCompleto;
     private final JTextField txtDni;
     private final JTextField txtDomicilio;
     private final JTextField txtTelefono;
-    // EL COMBOBOX CORRECTO YA NO ESTÁ EN EL DISEÑADOR: Lo declaramos aquí.
+
     private final JComboBox<TipoCliente> cmbTipoCliente = new JComboBox<>(); 
     private final JTextField txtBuscarId;
     private final javax.swing.JTable tblClientes;
@@ -43,27 +41,23 @@ public class FormCliente extends javax.swing.JPanel {
     public FormCliente() {
         initComponents();
 
-        // 3. ASIGNACIÓN DE VARIABLES INTERNAS
-        // Usamos los nombres genéricos que ya existen en el initComponents
-        this.txtNombreCompleto = jTextField1; // Asumiendo que es el nombre
-        this.txtDni = jTextField3;            // Asumiendo que es el DNI
-        this.txtDomicilio = jTextField4;      // Asumiendo que es Domicilio
-        this.txtTelefono = jTextField5;       // Asumiendo que es Teléfono
+        // ASIGNACIÓN DE VARIABLES INTERNAS
+        this.txtNombreCompleto = jTextField1;
+        this.txtDni = jTextField3;
+        this.txtDomicilio = jTextField4;
+        this.txtTelefono = jTextField5;
         this.txtBuscarId = jTextField2;
         this.tblClientes = jTable1;
         this.btnAgregar = jButtonAgregar;
         this.btnModificar = jButtonModificar;
         this.btnEliminar = jButtonEliminar;
 
-        // --- SOLUCIÓN DEL ERROR JComboBox ---
-        // 4. REEMPLAZO DEL JTextField6 (obsoleto) por nuestro JComboBox<TipoCliente>
+
         reemplazarTextFieldPorComboBox(jTextField6, cmbTipoCliente);
-        // ------------------------------------
-        
-        cargarTiposDeCliente(); // Carga el ComboBox
-        cargarTabla();          // Carga el JTable
-        
-        // Listener para la selección de filas
+
+        cargarTiposDeCliente();
+        cargarTabla();
+
         tblClientes.getSelectionModel().addListSelectionListener(this::tblClientesSelectionChanged);
         
         // Enlaces manuales (para evitar advertencias de unused)
@@ -72,30 +66,27 @@ public class FormCliente extends javax.swing.JPanel {
         btnEliminar.addActionListener(this::jButtonEliminarActionPerformed);
         txtBuscarId.addActionListener(this::jTextField2ActionPerformed); 
     }
-    
-    /**
-     * Método auxiliar para reemplazar un JTextField por un JComboBox manteniendo el layout.
-     */
+
 private void reemplazarTextFieldPorComboBox(JTextField oldField, JComboBox<TipoCliente> newCombo) {
     
-    // 1. Convertir el padre (parent) a un Container para poder usar métodos como add/remove/getLayout
+    // Convertir el padre (parent) a un Container para poder usar métodos como add/remove/getLayout
     Container parent = oldField.getParent();
     
     if (parent != null) {
         
-        // 2. Obtener las dimensiones exactas del campo viejo (oldField)
+        // Obtiene las dimensiones exactas del campo viejo (oldField)
         Rectangle bounds = oldField.getBounds();
         
-        // 3. Remover el campo viejo
+        // Remueve el campo viejo
         parent.remove(oldField);
         
-        // 4. Añadir el nuevo JComboBox
+        //  Añade el nuevo JComboBox
         parent.add(newCombo);
         
-        // 5. Aplicar las mismas restricciones de tamaño/posición
-        newCombo.setBounds(bounds); // Aplica la posición y tamaño del campo viejo
+        // Aplica las mismas restricciones de tamaño/posición
+        newCombo.setBounds(bounds);
         
-        // 6. Si el layout es GroupLayout, necesitamos actualizarlo (es GroupLayout en tu JPanel)
+        // actualiza layout
         if (parent.getLayout() instanceof GroupLayout) {
             parent.revalidate();
             parent.repaint();
@@ -113,8 +104,7 @@ private void reemplazarTextFieldPorComboBox(JTextField oldField, JComboBox<TipoC
             JOptionPane.showMessageDialog(this, "Error al cargar tipos de cliente: " + e.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    // --- Lógica de JTable ---
+
     private void cargarTabla() {
         List<Cliente> listaClientes = clienteDAO.listar();
         tblClientes.setModel(new ClienteTableModel(listaClientes));
@@ -128,13 +118,13 @@ private void reemplazarTextFieldPorComboBox(JTextField oldField, JComboBox<TipoC
             
             clienteSeleccionado = modelo.getCliente(fila);
             
-            // Cargar datos en los campos
+
             txtNombreCompleto.setText(clienteSeleccionado.getNombreCompleto());
             txtDni.setText(clienteSeleccionado.getDni());
             txtDomicilio.setText(clienteSeleccionado.getDomicilio());
             txtTelefono.setText(clienteSeleccionado.getTelefono());
             
-            // Seleccionar el TipoCliente en el ComboBox
+            // Selecciona el TipoCliente en el ComboBox
             if (clienteSeleccionado.getTipoCliente() != null) {
                  cmbTipoCliente.setSelectedItem(clienteSeleccionado.getTipoCliente());
             }
@@ -151,26 +141,22 @@ private void reemplazarTextFieldPorComboBox(JTextField oldField, JComboBox<TipoC
         txtDomicilio.setText("");
         txtTelefono.setText("");
         txtBuscarId.setText("");
-        cmbTipoCliente.setSelectedIndex(0); // Seleccionar el primer elemento
+        cmbTipoCliente.setSelectedIndex(0);
         clienteSeleccionado = null;
         tblClientes.clearSelection();
         
         btnAgregar.setEnabled(true);
         btnModificar.setEnabled(false);
         btnEliminar.setEnabled(false);
-        //txtNombreCompleto.requestFocus();
+
         
     }
-    
-        // --- Eventos de Botones (Lógica CRUD y Validación) ---
-    
+
     private boolean validarCamposCliente() {
-        // VALIDACIÓN DE LA CONSIGNA:
         if (!Validaciones.validarTextoMinimo(txtNombreCompleto, "Nombre Completo")) return false;
         if (!Validaciones.validarTextoMinimo(txtDomicilio, "Domicilio")) return false;
         if (!Validaciones.validarTextoMinimo(txtTelefono, "Teléfono")) return false;
-        
-        // DNI: Aunque es String en el modelo, se debe validar como Numérico > 0
+
         if (!Validaciones.validarNumeroMayorCero(txtDni, "DNI")) return false;
         
         if (cmbTipoCliente.getSelectedItem() == null) {
@@ -459,7 +445,7 @@ private void reemplazarTextFieldPorComboBox(JTextField oldField, JComboBox<TipoC
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-         // Lógica de Búsqueda por ID (Similar a Categoria)
+         // Lógica de Búsqueda por ID
         if (!Validaciones.validarNumeroMayorCero(txtBuscarId, "ID de Búsqueda")) return;
         
         try {
@@ -468,8 +454,7 @@ private void reemplazarTextFieldPorComboBox(JTextField oldField, JComboBox<TipoC
             
             if (cliente != null) {
                 tblClientes.setModel(new ClienteTableModel(List.of(cliente)));
-                
-                // Cargar campos para edición
+
                 txtNombreCompleto.setText(cliente.getNombreCompleto());
                 txtDni.setText(cliente.getDni());
                 txtDomicilio.setText(cliente.getDomicilio());
@@ -534,8 +519,8 @@ private void reemplazarTextFieldPorComboBox(JTextField oldField, JComboBox<TipoC
 //            return;
 //        }
 //        if (!validarCamposCliente()) return;
-        
-        // Aplicar cambios al objeto seleccionado
+
+        // Aplicamos cambios al objeto seleccionado
         clienteSeleccionado.setNombreCompleto(txtNombreCompleto.getText().trim());
         clienteSeleccionado.setDni(txtDni.getText().trim());
         clienteSeleccionado.setDomicilio(txtDomicilio.getText().trim());

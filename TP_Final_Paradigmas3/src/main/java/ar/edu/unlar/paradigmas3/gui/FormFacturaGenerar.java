@@ -2,7 +2,7 @@ package ar.edu.unlar.paradigmas3.gui;
 
 import ar.edu.unlar.paradigmas3.dao.impl.*; // Importamos todos los DAOs necesarios
 import ar.edu.unlar.paradigmas3.modelo.*;
-import ar.edu.unlar.paradigmas3.modeloTablas.*;
+import ar.edu.unlar.paradigmas3.models.*;
 import ar.edu.unlar.paradigmas3.utilidades.Validaciones;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,16 +13,15 @@ import javax.swing.JTextField;
 
 public class FormFacturaGenerar extends javax.swing.JPanel {
 
-    // 1. Dependencias y Estado
     private final ProductoDAO productoDAO = new ProductoDAO();
     private final ClienteDAO clienteDAO = new ClienteDAO();
     private final FormaPagoDAO formaPagoDAO = new FormaPagoDAO();
     private final FacturaDAO facturaDAO = new FacturaDAO();
     
-    // ESTADO CLAVE: El "carrito" que contendrá los detalles a guardar
+    // El "carrito" que tendra los detalles a guardar
     private final List<DetalleFactura> detallesVenta = new ArrayList<>();
     
-    // Mapeo de Componentes del Diseñador (Declaración de variables final)
+    // Mapeo de Componentes del Diseñador
     private final JComboBox<Producto> cmbProducto;
     private final JTextField txtCantidad;
     private final JComboBox<Cliente> cmbCliente;
@@ -32,12 +31,12 @@ public class FormFacturaGenerar extends javax.swing.JPanel {
     private final javax.swing.JButton btnAgregarItem;
     private final javax.swing.JButton btnGenerarFactura;
     
-    // 2. Variables para mostrar el Total (Lo agregamos manualmente a la UI o lo usamos internamente)
+    // Variables para mostrar el Total
     private double totalFactura = 0.0;
     
     public FormFacturaGenerar() {
         initComponents();
-                // --- ASIGNACIÓN DE VARIABLES INTERNAS ---
+                //ASIGNACIÓN DE VARIABLES INTERNAS
         this.cmbProducto = (JComboBox<Producto>) (JComboBox<?>) jcbProducto; 
         this.txtCantidad = jtfCantidad;
         this.cmbCliente = (JComboBox<Cliente>) (JComboBox<?>) jcbCliente;
@@ -48,13 +47,12 @@ public class FormFacturaGenerar extends javax.swing.JPanel {
         this.btnGenerarFactura = btn_GenerarFactura;
         
         cargarCombos();
-        actualizarDetalleTabla(); // Inicializa la tabla vacía
-        
+        actualizarDetalleTabla();
         // Enlaces manuales 
         btnAgregarItem.addActionListener(this::bntAgregarItemActionPerformed);
         btnGenerarFactura.addActionListener(this::btn_GenerarFacturaActionPerformed);
         
-        // Listener: Actualizar precio unitario al cambiar el producto
+        // Actualizar precio unitario
         jcbProducto.addActionListener(this::jcbProductoChanged);
         
     }
@@ -78,7 +76,7 @@ public class FormFacturaGenerar extends javax.swing.JPanel {
         }
     }
     
-    // --- Lógica de JTable Detalle (Carrito) ---
+
     private void actualizarDetalleTabla() {
         DetalleFacturaTableModel modelo = new DetalleFacturaTableModel(detallesVenta);
         tblDetalles.setModel(modelo);
@@ -90,24 +88,21 @@ public class FormFacturaGenerar extends javax.swing.JPanel {
         for (DetalleFactura detalle : detallesVenta) {
             totalFactura += detalle.calcularSubtotal();
         }
-        // Aquí podrías actualizar un Jlabel o JTextField deshabilitado con el total
-        // Ejemplo: lblTotal.setText(String.format("TOTAL: $%.2f", totalFactura));
     }
     
-// --- 3. Eventos del Detalle (Agregar Ítem) ---
+//  Eventos del Detalle
     
     private void jcbProductoChanged(java.awt.event.ActionEvent evt) {
-        // Lógica opcional para actualizar un campo de precio unitario en la interfaz
-        // No es estrictamente necesario, pero mejora la UX.
+
     }
     
     private void bntAgregarItemActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        // 1. VALIDACIÓN de Cantidad (Numérico > 0)
+        // VALIDACIÓN de Cantidad
         if (!Validaciones.validarNumeroMayorCero(txtCantidad, "Cantidad")) {
             return;
         }
         
-        // 2. Obtener datos
+        // Obtener datos
         Producto productoSeleccionado = (Producto) cmbProducto.getSelectedItem();
         int cantidad = Integer.parseInt(txtCantidad.getText().trim());
 
@@ -116,25 +111,25 @@ public class FormFacturaGenerar extends javax.swing.JPanel {
              return;
         }
 
-        // 3. VALIDACIÓN DE STOCK (Consigna implícita)
+        // VALIDACIÓN DE STOCK
         if (!productoSeleccionado.stockDisponible(cantidad)) {
             JOptionPane.showMessageDialog(this, "Stock insuficiente. Disponible: " + productoSeleccionado.getStock(), "Error de Stock", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // 4. Crear el Detalle y añadir al carrito
+        // crear el Detalle y añadir al carrito
         DetalleFactura nuevoDetalle = new DetalleFactura(productoSeleccionado, cantidad);
-        // Note: DetalleFactura ya calcula el subtotal y fija el precio unitario del producto.
+        .
         
         detallesVenta.add(nuevoDetalle);
         
-        // 5. Actualizar la tabla y limpiar campos
+
         actualizarDetalleTabla(); 
         txtCantidad.setText("");
         txtCantidad.requestFocus();
     }                                            
 
-    // --- 4. Evento Principal (Generar Factura - Transacción) ---
+    //Generar Factura - Transacción
 
     private void btn_GenerarFacturaActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         if (detallesVenta.isEmpty()) {
@@ -146,21 +141,20 @@ public class FormFacturaGenerar extends javax.swing.JPanel {
             return;
         }
 
-        // 1. Recopilar datos de Cabecera
+
         Factura nuevaFactura = new Factura();
-        nuevaFactura.setFechaGeneracion(LocalDate.now()); // Fecha automática
+        nuevaFactura.setFechaGeneracion(LocalDate.now());
         nuevaFactura.setCliente((Cliente) cmbCliente.getSelectedItem());
         nuevaFactura.setFormaPago((FormaPago) cmbFormaPago.getSelectedItem());
         nuevaFactura.setObservaciones(txtObservaciones.getText().trim());
         nuevaFactura.setDetalleFacturas(detallesVenta);
+
         
-        // El total se calcula en el objeto Factura.calcularTotal() y se inserta en la DB.
-        
-        // 2. Ejecutar la Transacción
+        // Ejecutar la Transacción
         if (facturaDAO.generar(nuevaFactura)) {
             JOptionPane.showMessageDialog(this, "FACTURA GENERADA Y GUARDADA CON ÉXITO.\nNº: " + nuevaFactura.getNumeroFactura(), "Transacción Exitosa", JOptionPane.INFORMATION_MESSAGE);
             
-            // 3. Resetear el formulario para una nueva factura
+            // Resetear el formulario para una nueva factura
             detallesVenta.clear();
             cargarCombos(); // Recarga combos si es necesario, limpia estado
             actualizarDetalleTabla();

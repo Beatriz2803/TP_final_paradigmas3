@@ -1,4 +1,4 @@
-package ar.edu.unlar.paradigmas3.modeloTablas;
+package ar.edu.unlar.paradigmas3.models;
 
 import ar.edu.unlar.paradigmas3.modelo.DetalleFactura;
 import java.util.List;
@@ -30,7 +30,7 @@ public class DetalleFacturaTableModel extends AbstractTableModel {
         }
     }
 
-    // El método que permite al JTable saber si el stock está disponible
+    // El metodo que permite al JTable saber si el stock está disponible
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return (columnIndex == 1 || columnIndex == 3) ? Integer.class : String.class;

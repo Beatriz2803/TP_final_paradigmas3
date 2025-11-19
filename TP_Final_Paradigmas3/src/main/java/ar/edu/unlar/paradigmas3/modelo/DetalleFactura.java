@@ -85,7 +85,6 @@ public class DetalleFactura {
     }
     @Override
     public String toString() {
-        // Asumimos que Producto tiene un getNombre()
         String nombreProducto = (producto != null) ? producto.getNombre() : "Producto no encontrado";
 
         return String.format(

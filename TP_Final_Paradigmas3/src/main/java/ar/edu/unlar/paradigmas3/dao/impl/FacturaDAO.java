@@ -24,7 +24,7 @@ public class FacturaDAO implements IFacturaDAO {
     private final IDetalleFacturaDAO detalleFacturaDAO = new DetalleFacturaDAO();
     private final ProductoDAO productoDAO = new ProductoDAO(); // Necesario para actualizar stock
 
-    // Metodo Auxiliar para mapear Factura ---
+    // Metodo Auxiliar para mapear Factura
     private Factura mapearFactura(ResultSet rs) throws Exception {
         Factura factura = new Factura();
         factura.setNumeroFactura(rs.getInt("numero_factura"));
@@ -32,7 +32,7 @@ public class FacturaDAO implements IFacturaDAO {
         // Mapeo de Date a LocalDate
         factura.setFechaGeneracion(rs.getDate("fecha_generacion").toLocalDate());
 
-        // **ASOCIACIONES:** Reconstruir Cliente y FormaPago
+        // Reconstruir Cliente y FormaPago
         int idCliente = rs.getInt("id_cliente");
         factura.setCliente(clienteDAO.buscarPorId(idCliente));
 
@@ -48,9 +48,9 @@ public class FacturaDAO implements IFacturaDAO {
 
     /**
      * MÉTODO TRANSACCIONAL CLAVE:
-     * 1. Inserta la factura.
-     * 2. Inserta los detalles.
-     * 3. Descuenta stock.
+     1. Inserta la factura.
+     2. Inserta los detalles.
+     3. Descuenta stock.
      */
     @Override
     public boolean generar(Factura factura) {
@@ -73,7 +73,7 @@ public class FacturaDAO implements IFacturaDAO {
             psFactura.setInt(2, factura.getCliente().getIdCliente());
             psFactura.setInt(3, factura.getFormaPago().getId_forma_pago());
             psFactura.setDouble(4, factura.calcularTotal());
-            // Nota: Insertamos el total calculado en Java. El trigger de la DB lo validará/recalculará.
+            // Insertamos el total calculado en Java. El trigger de la DB lo validará/recalculará.
             psFactura.setString(5, factura.getObservaciones());
 
             ResultSet rs = psFactura.executeQuery();
@@ -96,9 +96,9 @@ public class FacturaDAO implements IFacturaDAO {
                 Producto producto = detalle.getProducto();
                 int cantidadVendida = detalle.getCantidad();
 
-                producto.disminuirStock(cantidadVendida);// Lógica de negocio: Disminuir stock en el objeto
+                producto.disminuirStock(cantidadVendida);// Disminuir stock en el objeto
 
-                // Persistencia: Actualizar el stock en la DB
+                // Actualizar el stock en la DB
                 boolean stockActualizado = productoDAO.modificarStock(conn, producto.getIdProducto(), producto.getStock());
                 if (!stockActualizado) {
                     throw new Exception("Error al descontar stock del producto ID: " + producto.getIdProducto());
@@ -148,7 +148,6 @@ public class FacturaDAO implements IFacturaDAO {
 
             if (rs.next()) {
                 factura = mapearFactura(rs);
-                // **CARGA EAGER (Ansiosa):** Cargar los detalles inmediatamente
                 List<DetalleFactura> detalles = detalleFacturaDAO.buscarPorNumeroFactura(numeroFactura);
                 factura.setDetalleFacturas(detalles);
             }
@@ -170,7 +169,6 @@ public class FacturaDAO implements IFacturaDAO {
         ResultSet rs = null;
         List<Factura> facturas = new ArrayList<>();
 
-        // 1. SQL para seleccionar todas las facturas
         String sql = "SELECT * FROM facturas ORDER BY numero_factura DESC";
 
         try {

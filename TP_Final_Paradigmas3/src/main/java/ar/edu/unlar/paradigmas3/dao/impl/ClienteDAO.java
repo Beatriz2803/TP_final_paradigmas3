@@ -23,7 +23,7 @@ public class ClienteDAO implements IClienteDAO {
         cliente.setDomicilio(rs.getString("domicilio"));
         cliente.setTelefono(rs.getString("telefono"));
 
-        // PUNTO CLAVE: Reconstruir la asociación TipoCliente
+// Reconstruir la asociación TipoCliente
         int idTipo = rs.getInt("id_tipo_cliente");
         TipoCliente tipo = tipoClienteDAO.buscarPorId(idTipo);
         cliente.setTipoCliente(tipo);

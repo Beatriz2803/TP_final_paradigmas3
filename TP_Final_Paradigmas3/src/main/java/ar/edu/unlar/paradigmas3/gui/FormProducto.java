@@ -4,8 +4,8 @@ import ar.edu.unlar.paradigmas3.dao.impl.CategoriaDAO;
 import ar.edu.unlar.paradigmas3.dao.impl.ProductoDAO;
 import ar.edu.unlar.paradigmas3.modelo.Categoria;
 import ar.edu.unlar.paradigmas3.modelo.Producto;
-import ar.edu.unlar.paradigmas3.modeloTablas.CategoriaComboBoxModel;
-import ar.edu.unlar.paradigmas3.modeloTablas.ProductoTableModel;
+import ar.edu.unlar.paradigmas3.models.CategoriaComboBoxModel;
+import ar.edu.unlar.paradigmas3.models.ProductoTableModel;
 import ar.edu.unlar.paradigmas3.utilidades.Validaciones; // Asumo que cambiaste el nombre a ValidadorUtil
 
 import java.util.List;
@@ -16,15 +16,15 @@ import javax.swing.event.ListSelectionEvent;
 
 public class FormProducto extends javax.swing.JPanel {
 
-        // 1. Dependencias y Estado
+        // Dependencias y Estado
     private final ProductoDAO productoDAO = new ProductoDAO();
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
     private Producto productoSeleccionado = null;
     
-    // Lista de categorías para el ComboBox
+
     private List<Categoria> listaCategorias; 
     
-    // Mapeo de Componentes del Diseñador (Declaración de variables final)
+    // Mapeo de Componentes del Diseñador
     private final JTextField txtNombre;
     private final JTextField txtDescripcion;
     private final JTextField txtPrecio;
@@ -38,7 +38,7 @@ public class FormProducto extends javax.swing.JPanel {
 
     public FormProducto() {
         initComponents();
-    // --- ASIGNACIÓN DE VARIABLES INTERNAS ---
+    // ASIGNACIÓN DE VARIABLES INTERNAS
         this.txtNombre = jtfNombre;
         this.txtDescripcion = jtfDescripcion;
         this.txtPrecio = jtfPrecio;
@@ -55,7 +55,7 @@ public class FormProducto extends javax.swing.JPanel {
         cargarCategorias();
         cargarTabla();
         
-        // Listener para la selección de filas
+
         tblProductos.getSelectionModel().addListSelectionListener(this::tblProductosSelectionChanged);
         
         // Enlaces manuales (para evitar advertencias de unused)
@@ -65,7 +65,7 @@ public class FormProducto extends javax.swing.JPanel {
         txtBuscarId.addActionListener(this::jtfBuscarIdActionPerformed); 
     }
     
-    // --- Lógica de ComboBox de Categorías ---
+
     private void cargarCategorias() {
         try {
             listaCategorias = categoriaDAO.listar();
@@ -75,8 +75,7 @@ public class FormProducto extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Error al cargar categorías: " + e.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    // --- Lógica de JTable ---
+
     private void cargarTabla() {
         List<Producto> listaProductos = productoDAO.listar();
         tblProductos.setModel(new ProductoTableModel(listaProductos));
@@ -90,13 +89,12 @@ public class FormProducto extends javax.swing.JPanel {
             
             productoSeleccionado = modelo.getProducto(fila);
             
-            // Cargar datos en los campos
             txtNombre.setText(productoSeleccionado.getNombre());
             txtDescripcion.setText(productoSeleccionado.getDescripcion());
             txtPrecio.setText(String.valueOf(productoSeleccionado.getPrecioUnitario()));
             txtStock.setText(String.valueOf(productoSeleccionado.getStock()));
             
-            // Seleccionar la Categoría en el ComboBox
+
             if (productoSeleccionado.getCategoria() != null) {
                  cmbCategoria.setSelectedItem(productoSeleccionado.getCategoria());
             }
@@ -125,13 +123,11 @@ public class FormProducto extends javax.swing.JPanel {
     }
 
 
-    // --- 3. Validación de campos ---
+
     private boolean validarCamposProducto() {
-        // VALIDACIÓN DE TEXTO (min 3 caracteres)
         if (!Validaciones.validarTextoMinimo(txtNombre, "Nombre")) return false;
         if (!Validaciones.validarTextoMinimo(txtDescripcion, "Descripción")) return false;
-        
-        // VALIDACIÓN NUMÉRICA (número > 0)
+
         if (!Validaciones.validarNumeroMayorCero(txtPrecio, "Precio")) return false;
         if (!Validaciones.validarNumeroMayorCero(txtStock, "Stock")) return false; 
         
@@ -142,7 +138,7 @@ public class FormProducto extends javax.swing.JPanel {
         return true;
     }
 
-    // --- Eventos de Botones (Lógica CRUD) ---
+
     
     private void jButtonAgregarActionPerformed(java.awt.event.ActionEvent evt) {                                             
         if (!validarCamposProducto()) return;
@@ -152,8 +148,8 @@ public class FormProducto extends javax.swing.JPanel {
         Producto nuevoProducto = new Producto(
             txtNombre.getText().trim(),
             txtDescripcion.getText().trim(),
-            Double.parseDouble(txtPrecio.getText().trim()), // Conversión segura después de validación
-            Integer.parseInt(txtStock.getText().trim()),    // Conversión segura después de validación
+            Double.parseDouble(txtPrecio.getText().trim()),
+            Integer.parseInt(txtStock.getText().trim()),
             categoriaSeleccionada
         );
         
@@ -171,8 +167,7 @@ public class FormProducto extends javax.swing.JPanel {
             return;
         }
         if (!validarCamposProducto()) return;
-        
-        // Aplicar cambios al objeto seleccionado
+
         productoSeleccionado.setNombre(txtNombre.getText().trim());
         productoSeleccionado.setDescripcion(txtDescripcion.getText().trim());
         productoSeleccionado.setPrecioUnitario(Double.parseDouble(txtPrecio.getText().trim()));
@@ -482,7 +477,7 @@ public class FormProducto extends javax.swing.JPanel {
             if (producto != null) {
                 tblProductos.setModel(new ProductoTableModel(List.of(producto)));
                 
-                // Cargar campos para edición
+
                 txtNombre.setText(producto.getNombre());
                 txtDescripcion.setText(producto.getDescripcion());
                 txtPrecio.setText(String.valueOf(producto.getPrecioUnitario()));
@@ -491,7 +486,7 @@ public class FormProducto extends javax.swing.JPanel {
                 
                 productoSeleccionado = producto;
                 
-                // Habilitar Modificar/Eliminar
+                // Habilita Modificar/Eliminar
                 btnAgregar.setEnabled(false);
                 btnModificar.setEnabled(true);
                 btnEliminar.setEnabled(true);

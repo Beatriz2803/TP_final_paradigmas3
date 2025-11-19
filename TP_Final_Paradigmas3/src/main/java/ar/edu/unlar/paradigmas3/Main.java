@@ -9,11 +9,11 @@ public class Main {
     public static void main(String[] args) {
         try (Connection conexion = Conexion.getconexion()) {
             if (conexion != null) {
-                System.out.println("-----------------------------------------------------------------------");
-                System.out.println("Conexión exitosa ✅: " + conexion);
-                System.out.println("-----------------------------------------------------------------------");
+                System.out.println(".......................................................................");
+                System.out.println("CONEXION EXITOSA" + conexion);
+                System.out.println("........................................................................");
             } else {
-                System.out.println("❌ FATAL: No se pudo establecer la conexión.");
+                System.out.println("FATAL: No se pudo establecer la conexion.");
                 return; // Detener si la conexión falla
             }
         } catch (Exception e) {

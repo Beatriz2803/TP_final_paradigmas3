@@ -2,16 +2,16 @@
 package ar.edu.unlar.paradigmas3.gui;
 import ar.edu.unlar.paradigmas3.dao.impl.FacturaDAO;
 import ar.edu.unlar.paradigmas3.modelo.Factura;
-import ar.edu.unlar.paradigmas3.modeloTablas.FacturaTableModel;
+import ar.edu.unlar.paradigmas3.models.FacturaTableModel;
 import ar.edu.unlar.paradigmas3.utilidades.Validaciones;
 
 import java.util.List;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 public class FormVerFacturas extends javax.swing.JPanel {
 
-    // 1. Dependencias y Estado
+    // Dependencias y Estado
     private final FacturaDAO facturaDAO = new FacturaDAO();
 
     // Mapeo de Componentes del Diseñador
@@ -19,22 +19,20 @@ public class FormVerFacturas extends javax.swing.JPanel {
     private final javax.swing.JTextField txtBuscarId; // jtfBuscarId
     public FormVerFacturas() {
         initComponents();
-        // Asignación de variables internas
+
         this.tblFacturas = jTable1;
         this.txtBuscarId = jtfBuscarId;
 
-        cargarTablaCompleta(); // Cargar datos al iniciar
+        cargarTablaCompleta();
 
-        // Enlace del evento de búsqueda (Enter en el campo de texto)
+        // Enlace del evento de búsqueda
         jtfBuscarId.addActionListener(this::jtfBuscarIdActionPerformed);
     }
 
-    // --- Lógica de JTable ---
+    // Lógica de JTable
 
-    /**
-     * Carga el JTable con todas las facturas.
-     */
-    private void cargarTablaCompleta() {
+    //se Carga el JTable con todas las facturas.
+     private void cargarTablaCompleta() {
         try {
             // FacturaDAO.listar() carga la cabecera y los detalles
             List<Factura> listaFacturas = facturaDAO.listar();
@@ -53,10 +51,10 @@ public class FormVerFacturas extends javax.swing.JPanel {
     }
 
 
-    // --- Búsqueda por ID ---
+    // Búsqueda por ID
 
     private void jtfBuscarIdActionPerformed(java.awt.event.ActionEvent evt) {
-        // 1. VALIDACIÓN
+        //  VALIDACIÓN
         if (!Validaciones.validarNumeroMayorCero(txtBuscarId, "ID de Búsqueda")) {
             return;
         }

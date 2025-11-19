@@ -1,4 +1,4 @@
-package ar.edu.unlar.paradigmas3.modeloTablas;
+package ar.edu.unlar.paradigmas3.models;
 
 import ar.edu.unlar.paradigmas3.modelo.Categoria;
 import java.util.List;
@@ -44,12 +44,12 @@ public class CategoriaTableModel extends AbstractTableModel {
         }
     }
 
-    // Método auxiliar para obtener el objeto completo de una fila
+    // Metodo auxiliar para obtener el objeto completo de una fila
     public Categoria getCategoria(int rowIndex) {
         return categorias.get(rowIndex);
     }
 
-    // Permite al JTable saber qué tipo de dato hay en cada columna (útil para ordenamiento)
+    // Permite al JTable saber qué tipo de dato hay en cada columna
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return columnIndex == 0 ? Integer.class : String.class;

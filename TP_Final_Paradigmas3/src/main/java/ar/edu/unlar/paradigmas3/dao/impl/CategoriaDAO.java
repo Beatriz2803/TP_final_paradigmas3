@@ -130,6 +130,5 @@ public class CategoriaDAO implements ICategoriaDAO {
             Conexion.close(ps);
             Conexion.close(conexion);
         }
-
     }
 }
